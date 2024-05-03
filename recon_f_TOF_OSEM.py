@@ -3,7 +3,7 @@
 TOF reconstruction of activity map using OSEM
 Created on Sun Feb  6 11:18:11 2022
 @author: Zheyuan Zhu
-Edited: Chien-Min Kao, 10/2023
+Edited: Chien-Min Kao, 10/2023, Zhuo Chen 1/2024
 """
 import numpy as np
 
@@ -87,7 +87,7 @@ from scipy.io import loadmat
 datapath = f"{wdir}/{TOF_FWHM}ps/" + str(run) + '/data/'
 
 ## load true image
-f_map_true = loadmat(datapath + 'events_raw_phantom5.mat')['f_map']
+f_map_true = loadmat(datapath + 'events_raw.mat')['f_map']
 f_vec_true = np.reshape(f_map_true, (-1), order='C')
 
 ## load TOF matrix
@@ -97,8 +97,8 @@ Hfilename = f"{hdir}/h_matrix/H_TOF_Siddon_{TOF_FWHM}ps.mat"
 H = loadmat(Hfilename)['H'].tocsr()
 
 ## load data
-events_raw_filename = datapath + 'events_raw_phantom5.mat'
-events_measured_filename = datapath + f"events_measured_phantom5_{TOF_FWHM}ps.mat"
+events_raw_filename = datapath + 'events_raw.mat'
+events_measured_filename = datapath + f"events_measured_{TOF_FWHM}ps.mat"
 W = loadmat(events_measured_filename)['W']
 i1_511 = np.int32(W[:,0])
 i2_511 = np.int32(W[:,1])
@@ -202,7 +202,7 @@ if not os.path.exists(figures_outpath): os.makedirs(figures_outpath)
     
 # save results
 from scipy.io import savemat
-savemat(outpath + "recon_phantom5.mat",
+savemat(outpath + "recon.mat",
         {"iters": saved,
          "f_map_recons": images_saved,
          "f_map_true": f_map_true,

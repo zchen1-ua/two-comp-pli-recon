@@ -11,6 +11,7 @@ The rate-constant map of the fast decay is assumed known.
 
 Created on Sat Dec 23, 2023
 @author: Chien-Min Kao
+Edited: Zhuo Chen 1/2024
 """
 import numpy as np
 from numba import jit
@@ -79,7 +80,7 @@ datapath = f"{wdir}/{TOF_FWHM}ps/" + str(run) + '/data/'
 
 ## read the exactly known maps of the activity and the exactly known
 ## maps of the mixture weight and rate constant for DA, PP and OP decays
-events_raw_filename = datapath + 'events_raw_phantom5.mat'
+events_raw_filename = datapath + 'events_raw.mat'
 f_map_true = loadmat(events_raw_filename)['f_map']
 f_vec_true = np.reshape(f_map_true, (-1), order='C')
 DAwt_map_true, DArate_map_true = loadmat(events_raw_filename)['DA_map']
@@ -95,7 +96,7 @@ N_pix = np.size(f_vec_true)
 
 # load estimated f map
 f_est_path = f"{wdir}/{TOF_FWHM}ps/" + str(run) + "/recon_f_TOF_OSEM/"
-f_est_filename = f_est_path + "recon_phantom5.mat"
+f_est_filename = f_est_path + "recon.mat"
 f_map_est = loadmat(f_est_filename)['f_map_recons']
 ROI = f_map_true>0
 f_map_est = ROI*f_map_est[np.shape(f_map_est)[0]-1]
@@ -112,7 +113,7 @@ H_path = f"{hdir}/h_matrix/"
 H = loadmat(H_path+f"H_TOF_Siddon_{TOF_FWHM}ps.mat")['H'].tocsc()
 
 # read data
-events_measured_filename = datapath + f"events_measured_phantom5_{TOF_FWHM}ps.mat"
+events_measured_filename = datapath + f"events_measured_{TOF_FWHM}ps.mat"
 W = loadmat(events_measured_filename)['W']
 i1_511 = np.int32(W[:,0])
 i2_511 = np.int32(W[:,1])
@@ -386,7 +387,7 @@ figures_outpath = outpath + "figures/"
 if not os.path.exists(figures_outpath): os.makedirs(figures_outpath)
 
 from scipy.io import savemat
-savemat(outpath+'recon_phantom5.mat',
+savemat(outpath+'recon.mat',
         {'iters': saved,
          'OPrate_map_recon': rate_map_saved,
          'OPwt_map_recon': wt_map_saved,
